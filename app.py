@@ -1,6 +1,7 @@
 from flask import Flask,request,redirect,url_for,jsonify,session,make_response
 from flask_cors import CORS
 from flask_session import Session #security layer
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_bcrypt import Bcrypt
 import re
 from io import BytesIO
@@ -27,8 +28,10 @@ client = razorpay.Client(auth=("rzp_test_SzppdEzy51SPYd", "ZXV3p1lSRtZFXpt9wXac4
 from werkzeug.utils import secure_filename #used to check secured filenames or not
 import os
 
-mydb=connection.MySQLConnection(user='flaskuser',host='localhost',password='Ajay@2002',db='ecom')
+mydb=connection.MySQLConnection(user='flaskuser',host='localhost',password='password',db='flaskdb')
 app=Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app,x_proto=1,x_host=1)
+app.config['PREFERRED_URL_SCHEME']="https"
 app.permanent_session_lifetime=timedelta(days=1)
 CORS(app,supports_credentials=True)
 app.secret_keys='Code123'
